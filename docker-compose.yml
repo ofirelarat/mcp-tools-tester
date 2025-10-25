@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  api:
+    build: ./api
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./api/src:/usr/src/app/src
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - ENABLE_OLLAMA=true
+    networks:
+      - appnet
+
+  web:
+    build: ./web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge

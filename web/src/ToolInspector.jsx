@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "./api";
 
 export default function ToolInspector() {
   const [tools, setTools] = useState([]);
   const [selected, setSelected] = useState(null);
 
   async function load() {
-    const r = await axios.get("http://localhost:3001/api/tools");
+    const r = await api.get("/api/tools");
     setTools(r.data);
     if (r.data.length && !selected) setSelected(r.data[0].id);
   }

@@ -12,8 +12,8 @@ Quick start:
 2. From project root run:
    docker compose up --build
 
-3. Open UI: http://localhost:3000
-4. API: http://localhost:3001
+3. Open UI: http://localhost:5173
+4. API: http://localhost:5174
 
 How to add your MCP / tool:
 - Place a JSON file describing your tool into `api/src/tools/`.

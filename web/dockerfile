@@ -7,6 +7,6 @@ COPY . .
 RUN npm run build
 # serve via serve package (or simple static server)
 RUN npm i -g serve
-EXPOSE 3000
+EXPOSE 5173
 
-CMD ["serve", "-s", "dist", "-l", "3000"]
+CMD ["serve", "-s", "dist", "-l", "5173"]

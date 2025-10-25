@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "./api";
 
 export default function Chat() {
   const [messages, setMessages] = useState([
@@ -16,7 +16,7 @@ export default function Chat() {
     setInput("");
     setLoading(true);
     try {
-      const r = await axios.post("http://localhost:3001/api/chat", { messages: newMessages });
+      const r = await api.post("/api/chat", { messages: newMessages });
       const reply = r.data.reply;
       setMessages(m => [...m, { role: "assistant", content: reply }]);
     } catch (err) {

@@ -83,7 +83,7 @@ app.post("/api/chat", async (req, res) => {
 // health
 app.get("/api/health", (req, res) => res.json({ ok: true, time: Date.now() }));
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5174;
 app.listen(PORT, () => {
   console.log(`API listening on ${PORT}`);
 });

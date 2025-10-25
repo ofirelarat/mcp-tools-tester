@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "./api";
 
 export default function ToolRunner() {
   const [tools, setTools] = useState([]);
@@ -9,7 +9,7 @@ export default function ToolRunner() {
   const [running, setRunning] = useState(false);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/api/tools").then(r => {
+    api.get("/api/tools").then(r => {
       setTools(r.data);
       if (r.data.length) setToolId(r.data[0].id);
     }).catch(console.error);
@@ -27,7 +27,7 @@ export default function ToolRunner() {
       return;
     }
     try {
-      const r = await axios.post(`http://localhost:3001/api/tools/${toolId}/run`, parsed);
+      const r = await api.post(`/api/tools/${toolId}/run`, parsed);
       setOutput(r.data);
     } catch (err) {
       setOutput({ error: err.message, details: err.response?.data });

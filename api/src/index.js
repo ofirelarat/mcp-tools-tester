@@ -2,9 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-const { loadAllTools, getTool } = require("./mcpLoader");
+const { loadAllTools, getTool } = require("./utils/toolsLoader");
 const { callOllamaOrFallback } = require("./llm");
 const { v4: uuidv4 } = require("uuid");
+const mcpRoutes = require("./routes/mcps");
+const { handleChatMessage } = require("./llm");
+
 
 const app = express();
 app.use(cors());
@@ -65,6 +68,9 @@ app.post("/api/tools/:id/run", async (req, res) => {
   }
 });
 
+app.use("/api/mcps", mcpRoutes);
+
+
 // chat endpoint: { messages: [{role:'user'|'assistant', content: '...'}] }
 app.post("/api/chat", async (req, res) => {
   const { messages } = req.body;
@@ -72,7 +78,7 @@ app.post("/api/chat", async (req, res) => {
   // Flatten messages into a simple prompt for now
   const prompt = messages.map(m => `${m.role}: ${m.content}`).join("\n\n");
   try {
-    const reply = await callOllamaOrFallback(prompt);
+    const reply = await handleChatMessage(prompt);
     res.json({ reply });
   } catch (err) {
     console.error("chat error", err);

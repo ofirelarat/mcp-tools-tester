@@ -1,23 +1,6 @@
 version: "3.8"
 
 services:
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    restart: unless-stopped
-    ports:
-      - "11434:11434" # optional if you want external access
-    volumes:
-      - ollama_data:/root/.ollama
-    networks:
-      - appnet
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    command: /bin/sh -c "ollama serve & sleep 5 && ollama pull llama3 && wait"
-
   api:
     build: ./api
     container_name: mcp-tester-api
@@ -25,12 +8,9 @@ services:
     ports:
       - "5174:5174"
     environment:
-      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_HOST=http://host.docker.internal:11434
       - ENABLE_OLLAMA=true
       - PORT=5174
-    depends_on:
-      ollama:
-        condition: service_healthy
     volumes:
       - ./api/src:/usr/src/app/src
     networks:

@@ -1,0 +1,12 @@
+# Base minimal image for Ollama
+FROM ollama/ollama:latest
+
+# Optional: pre-pull your favorite models (so you don’t need to wait at runtime)
+# Uncomment if you want it baked in.
+# RUN ollama pull llama3
+
+# Expose Ollama’s API port
+EXPOSE 11434
+
+# Default command
+CMD ["serve"]

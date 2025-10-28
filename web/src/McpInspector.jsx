@@ -7,12 +7,12 @@ export default function McpInspector() {
   const [tools, setTools] = useState([]);
   const [logs, setLogs] = useState([]);
 
-  async function load() {
-    const r = await api.get("/api/mcps");
-    setMcps(r.data);
-  }
+  useEffect(() => {
+    async function load() {
+      const r = await api.get("/api/mcps");
+      setMcps(r.data);
+    }
 
-  useEffect(async () => {
     load();
   }, []);
 

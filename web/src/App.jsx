@@ -1,9 +1,16 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, NavLink, Navigate} from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  NavLink,
+  Navigate,
+} from "react-router-dom";
 import Chat from "./Chat";
 import ToolInspector from "./ToolInspector";
 import ToolRunner from "./ToolRunner";
 import McpInspector from "./McpInspector";
+import McpRunner from "./McpRunner";
 
 export default function App() {
   return (
@@ -63,7 +70,13 @@ export default function App() {
           <Route
             path="/tools"
             element={
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 420px", gap: 20 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 420px",
+                  gap: 20,
+                }}
+              >
                 <div>
                   <ToolRunner />
                 </div>
@@ -76,8 +89,19 @@ export default function App() {
           <Route
             path="/mcp"
             element={
-              <div>
-                <McpInspector />
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 420px",
+                  gap: 20,
+                }}
+              >
+                <div>
+                  <McpInspector />
+                </div>
+                <div>
+                  <McpRunner />
+                </div>
               </div>
             }
           />

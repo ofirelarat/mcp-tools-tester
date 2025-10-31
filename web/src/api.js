@@ -44,6 +44,9 @@ export const postSSE = async function (url, data, onMessage, signal) {
           } catch (err) {
             console.error("Failed to parse SSE JSON:", err, jsonStr);
           }
+        }else{
+            const parsed = JSON.parse(line);
+            onMessage(parsed);
         }
       }
     }
@@ -56,6 +59,9 @@ export const postSSE = async function (url, data, onMessage, signal) {
       const parsed = JSON.parse(jsonStr);
       onMessage(parsed);
     } catch { }
+  }else{
+    const parsed = JSON.parse(buffer);
+    onMessage(parsed);
   }
 };
 

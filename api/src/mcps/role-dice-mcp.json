@@ -1,0 +1,6 @@
+{
+  "id": "local-mcp-2",
+  "name": "Role a dice MCP Server",
+  "description": "MCP endpoint for local testing",
+  "url": "http://localhost:3005/mcp"
+}

@@ -1,9 +1,3 @@
-// tools/rollDice.js
-import { z } from "zod";
-
-/**
- * Defines a simple dice-rolling MCP tool.
- */
 export const rollDiceTool = {
   config: {
     name: "roll_dice",

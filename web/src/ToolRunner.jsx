@@ -9,15 +9,20 @@ export default function ToolRunner() {
   const [running, setRunning] = useState(false);
 
   useEffect(() => {
-    api.get("/api/tools").then(r => {
-      setTools(r.data);
-      if (r.data.length) setToolId(r.data[0].id);
-    }).catch(console.error);
+    api
+      .get("/api/tools")
+      .then((r) => {
+        setTools(r.data.tools); // unwrap tools
+        if (r.data.tools.length) setToolId(r.data.tools[0].id);
+      })
+      .catch(console.error);
   }, []);
 
   async function run() {
+    if (!toolId) return;
     setRunning(true);
     setOutput(null);
+
     let parsed;
     try {
       parsed = JSON.parse(input);
@@ -26,9 +31,10 @@ export default function ToolRunner() {
       setRunning(false);
       return;
     }
+
     try {
       const r = await api.post(`/api/tools/${toolId}/run`, parsed);
-      setOutput(r.data);
+      setOutput(r.data.result); // unwrap result
     } catch (err) {
       setOutput({ error: err.message, details: err.response?.data });
     } finally {
@@ -41,9 +47,15 @@ export default function ToolRunner() {
       <h2>Tool Runner</h2>
       <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
         <select value={toolId} onChange={(e) => setToolId(e.target.value)}>
-          {tools.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          {tools.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))}
         </select>
-        <button onClick={run} disabled={!toolId || running}>{running ? "Running..." : "Run"}</button>
+        <button onClick={run} disabled={!toolId || running}>
+          {running ? "Running..." : "Run"}
+        </button>
       </div>
       <textarea
         style={{ width: "100%", height: 120, fontFamily: "monospace" }}
@@ -52,7 +64,9 @@ export default function ToolRunner() {
       />
       <div style={{ marginTop: 8 }}>
         <h4>Output</h4>
-        <pre style={{ whiteSpace: "pre-wrap" }}>{JSON.stringify(output, null, 2)}</pre>
+        <pre style={{ whiteSpace: "pre-wrap" }}>
+          {JSON.stringify(output, null, 2)}
+        </pre>
       </div>
     </div>
   );

@@ -1,7 +1,13 @@
 import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { registerAppTool, registerAppResource, RESOURCE_MIME_TYPE } from '@modelcontextprotocol/ext-apps/server';
 import express from 'express';
-import { rollDiceTool } from './tools/roleDice.js';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { rollDiceTool } from './tools/rollDice.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 app.use(express.json());
@@ -11,8 +17,40 @@ const server = new McpServer({
     version: '1.0.0',
 });
 
-server.registerTool("Roll Dice", rollDiceTool.config, rollDiceTool.callback);
+// Register the dice tool as an app tool
+const resourceUri = "ui://dice/index.html";
 
+registerAppTool(
+    server,
+    rollDiceTool.name,
+    rollDiceTool.config,
+    rollDiceTool.callback
+);
+
+// Register the HTML resource for the dice app UI
+registerAppResource(
+    server,
+    "Dice Roller UI",
+    resourceUri,
+    {
+        description: "Interactive dice roller interface",
+    },
+    async () => {
+        const html = await fs.readFile(
+            path.join(__dirname, 'tools', 'dice-ui.html'),
+            'utf-8'
+        );
+        return {
+            contents: [
+                {
+                    uri: resourceUri,
+                    mimeType: RESOURCE_MIME_TYPE,
+                    text: html
+                }
+            ]
+        };
+    }
+);
 
 app.post('/mcp', async (req, res) => {
     console.log(`Received MCP request: ${req.method} ${req.url}`);

@@ -1,6 +1,0 @@
-{
-  "id": "local-mcp",
-  "name": "Local MCP Server",
-  "description": "MCP endpoint for local testing",
-  "url": "http://localhost:3000/mcp"
-}

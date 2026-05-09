@@ -5,10 +5,12 @@ export default function McpRunner() {
   const [mcps, setMcps] = useState([]);
   const [selectedMcp, setSelectedMcp] = useState(null);
   const [tools, setTools] = useState([]);
+  const [resources, setResources] = useState([]);
   const [toolName, setToolName] = useState("");
   const [input, setInput] = useState("{}");
   const [output, setOutput] = useState([]);
   const [running, setRunning] = useState(false);
+  const [appView, setAppView] = useState(null);
 
   // Load available MCPs
   useEffect(() => {
@@ -28,6 +30,8 @@ export default function McpRunner() {
     if (!selectedMcp) return;
     const abortController = new AbortController();
     setTools([]);
+    setResources([]);
+    setAppView(null);
     postSSE(
       `/api/mcps/${selectedMcp.id}`,
       {
@@ -42,6 +46,22 @@ export default function McpRunner() {
           if (event.result.tools.length) {
             setToolName(event.result.tools[0].name);
           }
+        }
+      },
+      abortController.signal
+    );
+
+    postSSE(
+      `/api/mcps/${selectedMcp.id}`,
+      {
+        jsonrpc: "2.0",
+        id: Date.now(),
+        method: "resources/list",
+        params: {},
+      },
+      (event) => {
+        if (event?.result?.resources) {
+          setResources(event.result.resources);
         }
       },
       abortController.signal
@@ -80,6 +100,30 @@ export default function McpRunner() {
     ).finally(() => setRunning(false));
   }
 
+  async function viewApp() {
+    const uiResource = resources.find(r => r.uri.startsWith('ui://'));
+    if (!uiResource) return;
+    setAppView(null);
+    const abortController = new AbortController();
+
+    postSSE(
+      `/api/mcps/${selectedMcp.id}`,
+      {
+        jsonrpc: "2.0",
+        id: Date.now(),
+        method: "resources/read",
+        params: { uri: uiResource.uri },
+      },
+      (event) => {
+        if (event?.result?.contents) {
+          const content = event.result.contents.find(c => c.mimeType === "text/html;profile=mcp-app");
+          if (content) setAppView(content.text);
+        }
+      },
+      abortController.signal
+    );
+  }
+
   return (
     <div style={{ border: "1px solid #ddd", padding: 12, borderRadius: 8 }}>
       <h2>🧠 MCP Runner</h2>
@@ -115,6 +159,10 @@ export default function McpRunner() {
         <button onClick={runTool} disabled={!toolName || running}>
           {running ? "Running..." : "Run"}
         </button>
+
+        <button onClick={viewApp} disabled={!resources.some(r => r.uri.startsWith('ui://'))}>
+          View App
+        </button>
       </div>
 
       <textarea
@@ -143,6 +191,68 @@ export default function McpRunner() {
                 .join("\n---\n")}
         </pre>
       </div>
+
+      {appView && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 8,
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+              maxWidth: "90vw",
+              maxHeight: "90vh",
+              width: 900,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "16px",
+                borderBottom: "1px solid #eee",
+              }}
+            >
+              <h3 style={{ margin: 0 }}>MCP App View</h3>
+              <button
+                onClick={() => setAppView(null)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: 24,
+                  cursor: "pointer",
+                  color: "#999",
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                padding: "16px",
+              }}
+              dangerouslySetInnerHTML={{ __html: appView }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

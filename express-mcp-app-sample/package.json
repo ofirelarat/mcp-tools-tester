@@ -1,0 +1,22 @@
+{
+  "name": "express-mcp-app-sample",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build:ui": "vite build",
+    "build": "npm run build:ui",
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.7.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "vite-plugin-singlefile": "^0.13.0"
+  }
+}

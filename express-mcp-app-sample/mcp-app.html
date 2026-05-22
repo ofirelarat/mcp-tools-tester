@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCP System Dashboard</title>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-main">
+        <h1>System Monitor</h1>
+        <p class="subtitle" id="system-info">Host System: Loading...</p>
+      </div>
+      <div class="status-indicator">
+        <span class="status-dot online"></span>
+        <span class="status-text">Connected</span>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="dashboard-grid">
+      <!-- CPU Metric Card -->
+      <div class="metric-card" id="cpu-card">
+        <div class="card-header">
+          <h3>CPU Usage</h3>
+          <span class="card-icon">⚡</span>
+        </div>
+        <div class="metric-body">
+          <div class="gauge-container">
+            <svg class="progress-ring" width="120" height="120">
+              <circle class="progress-ring-bg" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+              <circle class="progress-ring-bar" id="cpu-progress" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+            </svg>
+            <div class="gauge-value" id="cpu-value">0%</div>
+          </div>
+          <p class="metric-detail" id="cpu-cores">Cores: -- | Speed: --GHz</p>
+        </div>
+      </div>
+
+      <!-- Memory Metric Card -->
+      <div class="metric-card" id="mem-card">
+        <div class="card-header">
+          <h3>Memory</h3>
+          <span class="card-icon">💾</span>
+        </div>
+        <div class="metric-body">
+          <div class="linear-progress-container">
+            <div class="linear-progress-bar" id="mem-progress" style="width: 0%"></div>
+          </div>
+          <div class="metric-row">
+            <span class="metric-value" id="mem-value">0%</span>
+            <span class="metric-subtext" id="mem-text">0 / 0 GB</span>
+          </div>
+          <p class="metric-detail" id="mem-details">Active allocation</p>
+        </div>
+      </div>
+
+      <!-- General Info Card -->
+      <div class="metric-card" id="info-card">
+        <div class="card-header">
+          <h3>Server Info</h3>
+          <span class="card-icon">ℹ️</span>
+        </div>
+        <div class="metric-body info-body">
+          <div class="info-row">
+            <span>Uptime:</span>
+            <strong id="uptime-value">0s</strong>
+          </div>
+          <div class="info-row">
+            <span>Diagnostics:</span>
+            <strong id="diagnostics-mode">STANDARD</strong>
+          </div>
+          <div class="info-row">
+            <span>Server Time:</span>
+            <span id="server-time">--:--:--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Panel -->
+    <section class="dashboard-section actions-section">
+      <h2>Dashboard Controls</h2>
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="btn-refresh">
+          <span class="btn-icon">🔄</span> Refresh Diagnostics
+        </button>
+        <button class="btn btn-secondary" id="btn-diagnostic-toggle">
+          <span class="btn-icon">☣️</span> Toggle Diagnostic Mode
+        </button>
+        <button class="btn btn-danger" id="btn-gc">
+          <span class="btn-icon">🧹</span> Run Garbage Collection
+        </button>
+      </div>
+    </section>
+
+    <!-- Processes Table -->
+    <section class="dashboard-section table-section">
+      <div class="section-header">
+        <h2>Active Processes</h2>
+        <input type="text" id="search-process" placeholder="Filter processes...">
+      </div>
+      <div class="table-wrapper">
+        <table class="process-table">
+          <thead>
+            <tr>
+              <th>PID</th>
+              <th>Name</th>
+              <th>CPU %</th>
+              <th>Memory %</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="process-list">
+            <tr>
+              <td colspan="5" class="table-loading">Loading process tree...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Activity Log Terminal -->
+    <section class="dashboard-section logs-section">
+      <h2>System Logs</h2>
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <span class="terminal-title">live_logs@mcp-express-server</span>
+        </div>
+        <div class="terminal-body" id="log-terminal">
+          <div class="log-line text-info">[system] Console initialized. Ready for diagnostics.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="/src/mcp-app.js"></script>
+</body>
+</html>

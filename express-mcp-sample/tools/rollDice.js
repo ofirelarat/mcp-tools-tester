@@ -6,12 +6,7 @@ export const rollDiceTool = {
     description: "Roll dice with n sides and get the result",
     inputSchema: z.object({
       sides: z.number().int().min(2).max(100).default(6),
-    }),
-    _meta: {
-      ui: {
-        resourceUri: "ui://dice/index.html",
-      },
-    },
+    })
   },
   callback:
     async ({ sides = 6 }) => {
